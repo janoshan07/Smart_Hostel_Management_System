@@ -7,11 +7,11 @@ const Home = () => {
         <div className="font-sans bg-white overflow-x-hidden">
             {/* Hero Section Container */}
             <div 
-                className="relative min-h-screen bg-cover bg-center flex flex-col" 
-                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop')` }}
+                className="relative min-h-screen bg-cover bg-center bg-fixed flex flex-col" 
+                style={{ backgroundImage: `url('https://www.technewsworld.com/wp-content/uploads/sites/3/2023/06/smart-home-future.jpg')` }}
             >
-                {/* Dark Overlay similar to image */}
-                <div className="absolute inset-0 bg-[#0f1f2e]/75"></div>
+                {/* Overlay to enhance text visibility */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0f1f2e]/60 via-[#1a1410]/50 to-[#0f1f2e]/70"></div>
                 
                 <div className="relative z-10 flex flex-col min-h-screen">
                     {/* Top Contact Bar */}
