@@ -14,41 +14,43 @@ const Home = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0f1f2e]/60 via-[#1a1410]/50 to-[#0f1f2e]/70"></div>
                 
                 <div className="relative z-10 flex flex-col min-h-screen">
-                    {/* Top Contact Bar */}
-                    <div className="border-b border-white/10 hidden md:block">
-                        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-3 flex justify-between items-center text-[11px] text-white/80 font-medium tracking-widest">
-                            <div className="flex items-center gap-8">
-                                <span className="flex items-center gap-2 hover:text-[#e39c5f] transition-colors cursor-pointer"><Phone size={13}/> +00 (123) 456 7890</span>
-                                <span className="flex items-center gap-2 hover:text-[#e39c5f] transition-colors cursor-pointer"><Mail size={13}/> INFO@UNINEST.COM</span>
-                            </div>
-                            <div className="flex items-center gap-5">
-                                <HomeIcon size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
-                                <Twitter size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
-                                <Facebook size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
-                                <Instagram size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* Main Navbar */}
-                    <div className="border-b border-white/10">
-                        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                            {/* Logo Text Match Image */}
-                            <div className="text-2xl font-serif text-white tracking-[0.15em] uppercase">
-                                UNINEST
-                            </div>
-                            
-                            {/* Nav Links */}
-                            <div className="flex flex-wrap justify-center md:items-center gap-6 md:gap-8 text-[11px] text-white/80 font-semibold uppercase tracking-widest">
-                                {/*<Link to="/" className="text-[#e39c5f]">Home</Link>*/}
-                                {/*<span className="hover:text-[#e39c5f] transition-colors flex items-center gap-1 cursor-pointer">Pages <ChevronDown size={14}/></span>*/}
-                                {/*<span className="hover:text-[#e39c5f] transition-colors flex items-center gap-1 cursor-pointer">Features <ChevronDown size={14}/></span> */}
-                                <Link to="/login" className="hover:text-[#e39c5f] transition-colors">Login</Link>
-                                <Link to="/signup" className="hover:text-[#e39c5f] transition-colors">Register</Link>
-                                <Link to="/admin-login" className="hover:text-[#e39c5f] transition-colors">Admin Area</Link>
+                    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f1f2e]/85 backdrop-blur-md shadow-lg shadow-black/10">
+                        {/* Top Contact Bar */}
+                        <div className="border-b border-white/10 hidden md:block">
+                            <div className="max-w-7xl mx-auto px-6 lg:px-12 py-3 flex justify-between items-center text-[11px] text-white/80 font-medium tracking-widest">
+                                <div className="flex items-center gap-8">
+                                    <span className="flex items-center gap-2 hover:text-[#e39c5f] transition-colors cursor-pointer"><Phone size={13}/> +00 (123) 456 7890</span>
+                                    <span className="flex items-center gap-2 hover:text-[#e39c5f] transition-colors cursor-pointer"><Mail size={13}/> INFO@UNINEST.COM</span>
+                                </div>
+                                <div className="flex items-center gap-5">
+                                    <HomeIcon size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
+                                    <Twitter size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
+                                    <Facebook size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
+                                    <Instagram size={13} className="hover:text-[#e39c5f] cursor-pointer transition-colors" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        {/* Main Navbar */}
+                        <div className="border-b border-white/10">
+                            <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                                {/* Logo Text Match Image */}
+                                <div className="text-2xl font-serif text-white tracking-[0.15em] uppercase">
+                                    UNINEST
+                                </div>
+                                
+                                {/* Nav Links */}
+                                <div className="flex flex-wrap justify-center md:items-center gap-6 md:gap-8 text-[11px] text-white/80 font-semibold uppercase tracking-widest">
+                                    {/*<Link to="/" className="text-[#e39c5f]">Home</Link>*/}
+                                    {/*<span className="hover:text-[#e39c5f] transition-colors flex items-center gap-1 cursor-pointer">Pages <ChevronDown size={14}/></span>*/}
+                                    {/*<span className="hover:text-[#e39c5f] transition-colors flex items-center gap-1 cursor-pointer">Features <ChevronDown size={14}/></span> */}
+                                    <Link to="/login" className="hover:text-[#e39c5f] transition-colors">Login</Link>
+                                    <Link to="/signup" className="hover:text-[#e39c5f] transition-colors">Register</Link>
+                                    <Link to="/admin-login" className="hover:text-[#e39c5f] transition-colors">Admin Area</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
 
                     {/* Hero Content */}
                     <div className="flex-1 flex flex-col justify-center items-center text-center px-4 md:-mt-10">
@@ -178,4 +180,3 @@ const Home = () => {
 }
 
 export default Home;
-
