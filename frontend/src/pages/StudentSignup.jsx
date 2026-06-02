@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import { User, Mail, Hash, Phone, BookOpen, Calendar, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
+import API from '../services/api';
 
 const InputField = ({ icon: Icon, type, name, placeholder, label, value, errorMsg, isFocused, onFocus, onBlur, onChange, showPassword, showConfirmPassword, onTogglePassword }) => {
     const hasError = !!errorMsg;
@@ -107,12 +107,27 @@ function StudentSignup() {
     const validateField = (name, value) => {
         let msg = '';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const requiredLabels = {
+            fullName: 'Full name',
+            email: 'Email',
+            registrationNumber: 'Registration number',
+            contactNumber: 'Phone number',
+            course: 'Course',
+            batchYear: 'Enrollment year',
+            password: 'Password',
+            confirmPassword: 'Confirm password'
+        };
 
-        if (name === 'email') {
-            if (!value.trim()) msg = 'Email is required';
-            else if (!emailRegex.test(value)) msg = 'Enter a valid email address';
+        if (requiredLabels[name] && !String(value).trim()) {
+            msg = `${requiredLabels[name]} is required`;
+        } else if (name === 'email' && !emailRegex.test(value)) {
+            msg = 'Enter a valid email address';
         } else if (name === 'fullName' && value.trim() && !/^[a-zA-Z\s]+$/.test(value)) {
             msg = 'Letters and spaces only';
+        } else if (name === 'registrationNumber' && value.trim().length < 3) {
+            msg = 'Enter a valid registration number';
+        } else if (name === 'contactNumber' && value.trim() && !/^[+\d][\d\s()-]{6,}$/.test(value.trim())) {
+            msg = 'Enter a valid phone number';
         } else if (name === 'batchYear' && value) {
             const currentYear = new Date().getFullYear();
             const yearNum = parseInt(value, 10);
@@ -159,7 +174,7 @@ function StudentSignup() {
         const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : ' ';
 
         try {
-            await axios.post('http://localhost:5000/api/auth/register/student', {
+            await API.post('/auth/register/student', {
                 firstName,
                 lastName: lastName.trim() === '' ? ' ' : lastName, 
                 email: formData.email.trim(),
@@ -170,10 +185,21 @@ function StudentSignup() {
                 password: formData.password
             });
 
-            setSuccess('Registration successful! Redirecting...');
-            setTimeout(() => navigate('/'), 2000);
+            setSuccess('Registration successful! Redirecting to login...');
+            setFormData({
+                fullName: '', email: '', registrationNumber: '',
+                contactNumber: '', course: '', batchYear: '',
+                password: '', confirmPassword: ''
+            });
+            setTimeout(() => navigate('/login'), 1800);
         } catch (err) {
-            setError(err.response?.data?.msg || 'Registration failed. Please try again.');
+            const message =
+                err.response?.data?.message ||
+                err.response?.data?.msg ||
+                (err.response?.status === 404
+                    ? 'Signup endpoint was not found. Please make sure the backend server is running on the configured API URL.'
+                    : 'Registration failed. Please try again.');
+            setError(message);
         } finally {
             setIsLoading(false);
         }

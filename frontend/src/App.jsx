@@ -70,19 +70,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     return (
         <>
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-                <div className="flex flex-col items-center justify-center pt-8 pb-6 border-b border-slate-800/50 px-6 group cursor-pointer relative bg-slate-900/50">
+                <div className="flex flex-col items-center justify-center pt-8 pb-6 border-b border-[rgba(18,32,31,0.08)] px-6 group cursor-pointer relative bg-white/60">
                     <button className="mobile-nav-toggle absolute right-4 top-4" onClick={() => setIsOpen(false)} style={{ display: isOpen ? 'block' : 'none', position: 'absolute', padding: 0 }}>
                         <X size={24} className="text-slate-400" />
                     </button>
                     <img src={logo} alt="UNINEST Logo" className="h-16 w-auto max-w-full object-contain mb-3 drop-shadow-[0_4px_12px_rgba(99,102,241,0.3)] transition-transform duration-300 group-hover:scale-105 mx-auto" />
-                    <h2 className="text-xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent tracking-wide text-center">
+                    <h2 className="text-xl font-extrabold text-[#12201f] tracking-[0.16em] text-center">
                         UNINEST
                     </h2>
-                    <p className="text-xs text-slate-400 font-medium tracking-wide mt-1 text-center">Management System</p>
+                    <p className="text-xs text-[#60746f] font-medium tracking-wide mt-1 text-center">Management System</p>
                 </div>
 
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0 1rem' }}>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', padding: '1rem', marginTop: '1rem' }}>Menu</p>
+                    <p style={{ color: 'var(--theme-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', padding: '1rem', marginTop: '1rem', fontWeight: 800 }}>Menu</p>
 
                     <Link to="/student/dashboard" onClick={() => setIsOpen(false)} className={`nav-link ${location.pathname === '/student/dashboard' ? 'active' : ''}`} style={navStyle(location.pathname === '/student/dashboard')}>
                         <Home size={20} /> Student Dashboard
@@ -124,12 +124,12 @@ const navStyle = (isActive) => ({
     alignItems: 'center',
     gap: '1rem',
     padding: '0.8rem 1rem',
-    color: isActive ? 'white' : 'var(--text-muted)',
-    background: isActive ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+    color: isActive ? 'white' : 'var(--theme-muted)',
+    background: isActive ? 'var(--theme-green)' : 'transparent',
     textDecoration: 'none',
-    borderRadius: '8px',
+    borderRadius: '999px',
     fontWeight: isActive ? '600' : '400',
-    borderLeft: isActive ? '4px solid var(--primary)' : '4px solid transparent',
+    borderLeft: 'none',
     transition: 'all 0.2s'
 });
 

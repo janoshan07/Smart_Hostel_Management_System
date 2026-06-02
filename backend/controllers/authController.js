@@ -11,51 +11,100 @@ const generateToken = (user) => {
 exports.registerStudent = async (req, res, next) => {
     try {
         const { email, password, firstName, lastName, registrationNumber, gender, contactNumber, course, batchYear } = req.body;
-        
-        // Email validation
-        if (!email || !email.trim()) {
-            return res.status(400).json({ msg: 'Email is required' });
+
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+        const normalizedFirstName = String(firstName || '').trim();
+        const normalizedLastName = String(lastName || '').trim() || 'Not Provided';
+        const normalizedRegistrationNumber = String(registrationNumber || '').trim();
+        const normalizedContactNumber = String(contactNumber || '').trim();
+        const normalizedCourse = String(course || '').trim();
+        const normalizedGender = gender ? String(gender).trim() : undefined;
+
+        if (!normalizedEmail) {
+            return res.status(400).json({ success: false, message: 'Email is required', msg: 'Email is required' });
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email.trim())) {
-            return res.status(400).json({ msg: 'Invalid email format' });
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format', msg: 'Invalid email format' });
         }
 
-        // Strict name validation
+        if (!password || String(password).length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters', msg: 'Password must be at least 6 characters' });
+        }
+
         const nameRegex = /^[a-zA-Z\s]+$/;
-        if (!firstName || !nameRegex.test(firstName.trim())) {
-            return res.status(400).json({ msg: 'Name must contain only letters and spaces' });
+        if (!normalizedFirstName || !nameRegex.test(normalizedFirstName)) {
+            return res.status(400).json({ success: false, message: 'Name must contain only letters and spaces', msg: 'Name must contain only letters and spaces' });
         }
-        if (lastName && lastName.trim() !== '' && !nameRegex.test(lastName.trim())) {
-            return res.status(400).json({ msg: 'Name must contain only letters and spaces' });
+        if (!nameRegex.test(normalizedLastName)) {
+            return res.status(400).json({ success: false, message: 'Name must contain only letters and spaces', msg: 'Name must contain only letters and spaces' });
         }
 
-        // Strict year validation
+        if (!normalizedRegistrationNumber) {
+            return res.status(400).json({ success: false, message: 'Registration number is required', msg: 'Registration number is required' });
+        }
+
+        if (!normalizedCourse) {
+            return res.status(400).json({ success: false, message: 'Course is required', msg: 'Course is required' });
+        }
+
         const currentYear = new Date().getFullYear();
         const parsedYear = parseInt(batchYear, 10);
-        if (isNaN(parsedYear) || parsedYear > currentYear) {
-            return res.status(400).json({ msg: 'Year cannot be in the future' });
+        if (isNaN(parsedYear) || parsedYear < currentYear - 3 || parsedYear > currentYear) {
+            return res.status(400).json({
+                success: false,
+                message: 'Enrollment year must be within the last 3 years or current year',
+                msg: 'Enrollment year must be within the last 3 years or current year'
+            });
         }
 
-        let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ msg: 'User already exists with this email' });
+        let user = await User.findOne({ email: normalizedEmail });
+        if (user) return res.status(400).json({ success: false, message: 'User already exists with this email', msg: 'User already exists with this email' });
 
-        let existingStudent = await Student.findOne({ registrationNumber });
-        if (existingStudent) return res.status(400).json({ msg: 'Registration number already registered' });
+        let existingStudent = await Student.findOne({ registrationNumber: normalizedRegistrationNumber });
+        if (existingStudent) return res.status(400).json({ success: false, message: 'Registration number already registered', msg: 'Registration number already registered' });
 
-        user = new User({ email, password, role: 'Student' });
+        user = new User({ email: normalizedEmail, password, role: 'Student' });
         await user.save();
 
-        const student = new Student({ userId: user._id, firstName, lastName, registrationNumber, gender, contactNumber, course, batchYear });
-        await student.save();
+        let student;
+        try {
+            student = new Student({
+                userId: user._id,
+                firstName: normalizedFirstName,
+                lastName: normalizedLastName,
+                registrationNumber: normalizedRegistrationNumber,
+                gender: normalizedGender,
+                contactNumber: normalizedContactNumber,
+                course: normalizedCourse,
+                batchYear: parsedYear
+            });
+            await student.save();
+        } catch (profileErr) {
+            await User.findByIdAndDelete(user._id);
+            throw profileErr;
+        }
 
         user.profileId = student._id;
         await user.save();
 
-        res.json({ token: generateToken(user), user: { id: user._id, role: user.role, profileId: user.profileId } });
+        res.status(201).json({
+            success: true,
+            message: 'Student registered successfully',
+            token: generateToken(user),
+            user: { id: user._id, role: user.role, profileId: user.profileId }
+        });
     } catch (err) {
         console.error('Student Registration Error:', err.message);
-        res.status(500).json({ msg: 'Server Error: ' + err.message });
+        if (err.code === 11000) {
+            const duplicateField = Object.keys(err.keyPattern || {})[0] || 'field';
+            return res.status(400).json({
+                success: false,
+                message: `${duplicateField} is already registered`,
+                msg: `${duplicateField} is already registered`
+            });
+        }
+        res.status(500).json({ success: false, message: 'Server Error: ' + err.message, msg: 'Server Error: ' + err.message });
     }
 };
 

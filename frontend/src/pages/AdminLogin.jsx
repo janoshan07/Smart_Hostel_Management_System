@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, ShieldCheck, Users } from 'lucide-react';
 import logo from '../assets/logo.png';
+import API from '../services/api';
 
 function AdminLogin() {
     const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ function AdminLogin() {
         setError('');
 
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const res = await API.post('/auth/login', { email, password });
             
             if (res.data.user.role !== 'Admin') {
                 setError('Access denied. Please use the Student login portal.');
@@ -33,7 +33,7 @@ function AdminLogin() {
             
             navigate('/admin');
         } catch (err) {
-            setError(err.response?.data?.msg || 'Invalid Credentials');
+            setError(err.response?.data?.message || err.response?.data?.msg || 'Invalid credentials or API server unavailable');
         } finally {
             setIsLoading(false);
         }
