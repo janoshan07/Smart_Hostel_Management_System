@@ -152,7 +152,8 @@ exports.registerAdmin = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
 
         const isMatch = await user.matchPassword(password);
