@@ -40,8 +40,43 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-indigo-500/30 font-sans">
-            <div className="w-full max-w-6xl bg-slate-900/40 backdrop-blur-2xl rounded-3xl border border-slate-800/60 shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row">
+        <div className="min-h-screen bg-slate-950 flex flex-col selection:bg-indigo-500/30 font-sans text-slate-100">
+            <style>{`
+                .auth-header-btn {
+                    color: #ffffff !important;
+                }
+                .auth-header-btn:hover {
+                    color: #ffffff !important;
+                }
+            `}</style>
+
+            {/* Header */}
+            <header className="relative z-10 flex items-center justify-between gap-4 px-5 py-5 sm:px-7 lg:px-9 mx-auto w-full max-w-7xl">
+                <Link to="/" className="flex items-center gap-3 text-[#12201f] no-underline">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(18,32,31,0.08)] border border-slate-100">
+                        <img src="/Logo.png" alt="UNINEST" className="h-9 w-9 object-contain" />
+                    </span>
+                    <span className="text-lg font-black tracking-[0.16em] text-[#12201f]">UNINEST</span>
+                </Link>
+
+                <nav className="hidden items-center gap-2 rounded-full border border-white/80 bg-white/70 p-1 text-sm font-semibold text-[#49605d] shadow-sm md:flex">
+                    <Link to="/" className="rounded-full px-4 py-2 transition hover:bg-[#12201f] hover:text-white">Home</Link>
+                    <a href="/#features" className="rounded-full px-4 py-2 transition hover:bg-[#12201f] hover:text-white">Features</a>
+                    <Link to="/admin-login" className="rounded-full px-4 py-2 transition hover:bg-[#12201f] hover:text-white">Admin</Link>
+                </nav>
+
+                <div className="flex items-center gap-2">
+                    <Link to="/signup" className="auth-header-btn inline-flex items-center gap-2 rounded-full bg-[#12201f] px-4 py-2.5 text-sm font-bold shadow-[0_12px_30px_rgba(18,32,31,0.24)] transition hover:-translate-y-0.5 hover:bg-[#1f3835]">
+                        Register
+                        <ArrowRight size={16} />
+                    </Link>
+                </div>
+            </header>
+
+            {/* Main Content (Centered Form Card) */}
+            <div className="flex-1 flex items-center justify-center p-4 md:p-12">
+                <div className="w-full max-w-6xl bg-slate-900/40 backdrop-blur-2xl rounded-3xl border border-slate-800/60 shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row">
+
                 
                 {/* Left Branding Panel */}
                 <div className="hidden md:flex w-2/5 relative flex-col justify-between p-12 overflow-hidden bg-gradient-to-br from-indigo-900/40 via-purple-900/30 to-slate-900/80 border-r border-slate-800/50">
@@ -189,6 +224,27 @@ function Login() {
                     </div>
                 </div>
             </div>
+            </div>
+            
+            {/* Footer */}
+            <footer className="relative z-10 bg-[#0d1716] px-5 py-8 text-white sm:px-8 lg:px-10 mt-auto">
+                <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-3">
+                        <img src="/Logo.png" alt="UNINEST" className="h-10 w-10 rounded-xl object-contain bg-white/10 p-0.5" />
+                        <div>
+                            <p className="text-base font-black tracking-[0.16em]">UNINEST</p>
+                            <p className="text-xs text-white/55 font-medium">Smart Hostel Management System</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4 text-sm font-bold text-white/70">
+                        <Link to="/" className="transition hover:text-white">Home</Link>
+                        <Link to="/login" className="transition hover:text-white">Login</Link>
+                        <Link to="/signup" className="transition hover:text-white">Register</Link>
+                        <Link to="/admin-login" className="transition hover:text-white">Admin Area</Link>
+                    </div>
+                    <p className="text-xs font-semibold text-white/45">Copyright {new Date().getFullYear()} UNINEST. All rights reserved.</p>
+                </div>
+            </footer>
         </div>
     );
 }
