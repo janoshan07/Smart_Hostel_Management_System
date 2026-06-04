@@ -5,7 +5,7 @@ import { getStoredStudentIdentity } from './studentIdentity';
 import { getStoredStudentId, saveStudentId } from './studentStorage';
 
 const getErrorMessage = (error) => error?.response?.data?.message || 'Failed to load student complaints.';
-const COMPLAINTS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/complaints';
+const COMPLAINTS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api/complaints';
 const STUDENT_API_BASE_URL = (() => {
   try {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
@@ -14,7 +14,7 @@ const STUDENT_API_BASE_URL = (() => {
       : new URL(COMPLAINTS_API_BASE_URL, origin).toString();
     return new URL('/api/students', baseUrl).toString();
   } catch {
-    return 'http://localhost:5000/api/students';
+    return 'http://localhost:5001/api/students';
   }
 })();
 

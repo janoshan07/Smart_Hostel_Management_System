@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../services/api';
 
 const ManageRooms = () => {
     const [rooms, setRooms] = useState([]);
@@ -11,10 +11,7 @@ const ManageRooms = () => {
 
     const fetchRooms = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.get('http://localhost:5000/api/rooms', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/rooms');
             setRooms(res.data);
             setLoading(false);
         } catch (err) {
@@ -30,17 +27,12 @@ const ManageRooms = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('adminToken');
             if (isEditing) {
-                await axios.put(`http://localhost:5000/api/rooms/${editId}`, form, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                await API.put(`/rooms/${editId}`, form);
                 setIsEditing(false);
                 setEditId(null);
             } else {
-                await axios.post('http://localhost:5000/api/rooms', form, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                await API.post('/rooms', form);
             }
             setForm({ roomNumber: '', type: 'Single', capacity: 1, pricePerMonth: 100 });
             fetchRooms();
@@ -58,10 +50,7 @@ const ManageRooms = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this room?")) return;
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/rooms/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.delete(`/rooms/${id}`);
             fetchRooms();
         } catch (err) {
             alert(err.response?.data?.msg || 'Failed to delete room');
@@ -70,10 +59,7 @@ const ManageRooms = () => {
 
     const handleStatusChange = async (id, status) => {
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(`http://localhost:5000/api/rooms/${id}/status`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.put(`/rooms/${id}/status`, { status });
             fetchRooms();
         } catch (err) {
             alert(err.response?.data?.msg || 'Failed to update status');

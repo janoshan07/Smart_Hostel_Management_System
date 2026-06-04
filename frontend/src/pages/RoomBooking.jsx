@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 
 function RoomBooking() {
     const [rooms, setRooms] = useState([]);
@@ -8,10 +8,9 @@ function RoomBooking() {
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem('token');
             const [roomsRes, allocsRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/rooms', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:5000/api/allocations', { headers: { Authorization: `Bearer ${token}` } })
+                API.get('/rooms'),
+                API.get('/allocations')
             ]);
             
             setRooms(roomsRes.data);
@@ -29,10 +28,7 @@ function RoomBooking() {
 
     const handleRequest = async (roomId) => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/allocations/request', { roomId }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.post('/allocations/request', { roomId });
             alert('Room requested successfully');
             fetchData();
         } catch (err) {

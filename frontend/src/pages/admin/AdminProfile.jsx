@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API, { BACKEND_URL } from '../../services/api';
 import { User, Mail, Briefcase, Hash, Calendar, Camera, Save } from 'lucide-react';
 
 const AdminProfile = () => {
@@ -18,10 +18,7 @@ const AdminProfile = () => {
 
     const fetchProfile = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.get('http://localhost:5000/api/admin/profile', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/admin/profile');
             setProfile(res.data);
             setFormData({
                 firstName: res.data.firstName || '',
@@ -29,7 +26,7 @@ const AdminProfile = () => {
                 department: res.data.department || ''
             });
             if (res.data.profilePic) {
-                 setPreviewUrl(`http://localhost:5000${res.data.profilePic}`);
+                setPreviewUrl(`${BACKEND_URL}${res.data.profilePic}`);
             }
             setLoading(false);
         } catch (err) {
@@ -56,7 +53,6 @@ const AdminProfile = () => {
         setSuccess('');
         
         try {
-            const token = localStorage.getItem('adminToken');
             const data = new FormData();
             data.append('firstName', formData.firstName);
             data.append('lastName', formData.lastName);
@@ -64,13 +60,7 @@ const AdminProfile = () => {
             if (profilePic) {
                 data.append('profilePic', profilePic);
             }
-
-            const res = await axios.put('http://localhost:5000/api/admin/profile', data, {
-                headers: { 
-                    Authorization: `Bearer ${token}`,
-                    // 'Content-Type': 'multipart/form-data' is omitted, axios handles it automatically with FormData
-                }
-            });
+            const res = await API.put('/admin/profile', data);
             
             setProfile(res.data);
             setSuccess('Profile updated successfully!');

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../services/api';
 import DashboardCards from '../../components/admin/DashboardCards';
 import RecentComplaints from '../../components/admin/RecentComplaints';
 
@@ -15,20 +15,10 @@ const DashboardMain = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const token = localStorage.getItem('adminToken');
-                const config = { headers: { Authorization: `Bearer ${token}` } };
-                // Also support non-Bearer if backend requires it
-                const configFallback = { headers: { 'x-auth-token': token } };
-
-                // In case there is no specific dashboard endpoint, we fetch resources directly
-                // Adjust base URL if needed. Usually '/api/...' is proxied or full URL is used.
-                // Assuming standard endpoint structure:
-                const baseUrl = 'http://localhost:5000/api';
-
                 const [resStudents, resRooms, resComplaints] = await Promise.all([
-                    axios.get(`${baseUrl}/students`, configFallback).catch(() => ({ data: [] })),
-                    axios.get(`${baseUrl}/rooms`, configFallback).catch(() => ({ data: [] })),
-                    axios.get(`${baseUrl}/complaints`, configFallback).catch(() => ({ data: [] }))
+                    API.get('/students').catch(() => ({ data: [] })),
+                    API.get('/rooms').catch(() => ({ data: [] })),
+                    API.get('/complaints').catch(() => ({ data: [] }))
                 ]);
 
                 const students = resStudents.data || [];

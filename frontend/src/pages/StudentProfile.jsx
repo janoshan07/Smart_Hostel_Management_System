@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API, { BACKEND_URL } from '../services/api';
 import { User, CheckCircle, ChevronRight, AlertCircle, Upload, BedDouble, Coffee, Users, Wifi, Wind, Droplets, BookOpen, Clock, Building, AlertTriangle, UserX } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import StudentNavbar from '../components/studentDashboard/StudentNavbar';
@@ -32,10 +32,7 @@ export default function StudentProfile() {
 
     const fetchProfile = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5000/api/students/profile', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/students/profile');
             setProfile(res.data);
             if (res.data.preferences) {
                 setPreferences(res.data.preferences);
@@ -52,10 +49,7 @@ export default function StudentProfile() {
 
     const handleAcknowledgeWarning = async () => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.put('http://localhost:5000/api/students/warning/acknowledge', {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.put('/students/warning/acknowledge', {});
             setProfile(prev => ({ ...prev, warningAcknowledged: true }));
         } catch (err) {
             console.error('Failed to acknowledge warning', err);
@@ -79,13 +73,10 @@ export default function StudentProfile() {
 
     const handleSaveProfile = async () => {
         try {
-            const token = localStorage.getItem('token');
             const newCompletion = 100;
-            const res = await axios.put('http://localhost:5000/api/students/profile', {
+            const res = await API.put('/students/profile', {
                 preferences,
                 profileCompletion: newCompletion
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setProfile(res.data);
             setProfileCompletion(newCompletion);
@@ -142,11 +133,8 @@ export default function StudentProfile() {
         const croppedBase64 = getCroppedImgBase64();
         if (croppedBase64) {
             try {
-                const token = localStorage.getItem('token');
-                const res = await axios.put('http://localhost:5000/api/students/profile', {
+                const res = await API.put('/students/profile', {
                     profilePic: croppedBase64
-                }, {
-                    headers: { Authorization: `Bearer ${token}` }
                 });
                 setProfile(res.data);
                 setCropModalOpen(false);
@@ -466,7 +454,7 @@ export default function StudentProfile() {
                                     <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end mb-6">
                                         <div className="relative group cursor-pointer w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-slate-900 overflow-hidden bg-slate-800 shrink-0 shadow-2xl transition-transform hover:scale-105">
                                             {profile?.profilePic ? (
-                                                <img src={profile.profilePic.startsWith('data:image') || profile.profilePic.startsWith('http') ? profile.profilePic : `http://localhost:5000${profile.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
+                                                <img src={profile.profilePic.startsWith('data:image') || profile.profilePic.startsWith('http') ? profile.profilePic : `${BACKEND_URL}${profile.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
                                             ) : (
                                                 <span className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-indigo-400">{initials}</span>
                                             )}

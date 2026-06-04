@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, User, Menu, LogOut, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../../services/api';
 
 const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen, setActiveTab }) => {
     const navigate = useNavigate();
@@ -55,8 +56,8 @@ const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen, setActiveTab }) => {
 
             {/* Search Bar */}
             <div className="flex-1 max-w-xl hidden md:block ml-4 md:ml-0">
-                <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#60746f] group-focus-within:text-[#287465] transition-colors" />
+                <div className="relative group flex items-center">
+                    <Search className="absolute left-4 w-4 h-4 text-[#60746f] group-focus-within:text-[#287465] transition-colors" />
                     <input
                         type="text"
                         placeholder="Search students, rooms, payments..."
@@ -79,7 +80,7 @@ const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen, setActiveTab }) => {
                     </div>
                     <div className="w-10 h-10 rounded-full bg-[#287465]/10 border border-[#287465]/20 flex items-center justify-center text-[#287465] shadow-inner overflow-hidden hover:ring-2 hover:ring-[#287465]/40 transition-all">
                         {user.profilePic ? (
-                            <img src={`http://localhost:5000${user.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={user.profilePic.startsWith('data:image') || user.profilePic.startsWith('http') ? user.profilePic : `${BACKEND_URL}${user.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <span className="font-bold">{user.name ? user.name.charAt(0).toUpperCase() : 'A'}</span>
                         )}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../services/api';
 import { User, Mail, Hash, Briefcase, Lock, Eye, EyeOff, Loader2, ArrowRight, ShieldCheck, Users } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -126,7 +126,7 @@ function AdminRegister() {
                 password: formData.password
             };
 
-            const res = await axios.post('http://localhost:5000/api/admin/register', payload);
+            const res = await API.post('/admin/register', payload);
 
             setSuccess(res.data.message || 'Admin registration successful! Redirecting...');
             setTimeout(() => navigate('/admin-login'), 2000);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const DEFAULT_COMPLAINTS_API_URL = 'http://localhost:5000/api/complaints';
+const DEFAULT_COMPLAINTS_API_URL = 'http://localhost:5001/api/complaints';
 
 const normalizePathname = (pathname = '') => pathname.replace(/\/+$/, '');
 

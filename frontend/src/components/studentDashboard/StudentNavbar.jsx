@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, User, LogOut, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo.png';
+import { BACKEND_URL } from '../../services/api';
 
 const StudentNavbar = ({ profile }) => {
     const navigate = useNavigate();
@@ -33,15 +33,14 @@ const StudentNavbar = ({ profile }) => {
     return (
         <nav className="h-20 bg-white/78 backdrop-blur-xl border-b border-[rgba(18,32,31,0.08)] flex items-center justify-between px-6 z-40 relative shadow-[0_10px_30px_rgba(18,32,31,0.06)] w-full shrink-0">
             <div className="flex items-center">
-                <img src={logo} alt="UNINEST Logo" className="w-[45px] h-auto object-contain drop-shadow-[0_10px_24px_rgba(40,116,101,0.18)] mr-[10px]" />
-                <h2 className="text-xl font-extrabold text-[#12201f] tracking-[0.16em] hidden sm:block">
+               {/* <h2 className="text-xl font-extrabold text-[#12201f] tracking-[0.16em] hidden sm:block">
                     UNINEST
-                </h2>
+                </h2>*/}
             </div>
 
             <div className="flex-1 max-w-xl mx-auto ml-4 sm:ml-6 hidden md:block">
-                <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#60746f] group-focus-within:text-[#287465] transition-colors" />
+                <div className="relative group flex items-center">
+                    <Search className="absolute left-4 w-4 h-4 text-[#60746f] group-focus-within:text-[#287465] transition-colors" />
                     <input
                         type="text"
                         placeholder="Search notices, payments..."
@@ -63,7 +62,7 @@ const StudentNavbar = ({ profile }) => {
                     </div>
                     <div className="w-10 h-10 rounded-full bg-[#287465]/10 border border-[#287465]/20 flex items-center justify-center text-[#287465] shadow-inner overflow-hidden hover:ring-2 hover:ring-[#287465]/40 transition-all">
                         {profile?.profilePic ? (
-                            <img src={profile.profilePic.startsWith('data:image') || profile.profilePic.startsWith('http') ? profile.profilePic : `http://localhost:5000${profile.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={profile.profilePic.startsWith('data:image') || profile.profilePic.startsWith('http') ? profile.profilePic : `${BACKEND_URL}${profile.profilePic}`} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <span className="font-bold text-lg">{firstInitial}</span>
                         )}

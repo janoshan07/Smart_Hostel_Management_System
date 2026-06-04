@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 
 function Notices() {
     const [notices, setNotices] = useState([]);
@@ -7,10 +7,7 @@ function Notices() {
 
     const fetchNotices = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5000/api/notices', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/notices');
             // Filter notices if necessary (e.g. only 'All' or 'Students')
             const applicableNotices = res.data.filter(n => n.targetAudience === 'All' || n.targetAudience === 'Students');
             setNotices(applicableNotices);

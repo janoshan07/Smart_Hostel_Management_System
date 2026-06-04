@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/complaints';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 const SOCKET_ENV_URL = import.meta.env.VITE_SOCKET_URL || '';
 
 const resolveSocketBaseUrl = () => {
@@ -9,11 +9,11 @@ const resolveSocketBaseUrl = () => {
     try {
       return new URL(API_BASE_URL).origin;
     } catch (error) {
-      return 'http://localhost:5000';
+      return 'http://localhost:5001';
     }
   }
   if (typeof window !== 'undefined') return window.location.origin;
-  return 'http://localhost:5000';
+  return 'http://localhost:5001';
 };
 
 const SOCKET_BASE_URL = resolveSocketBaseUrl();

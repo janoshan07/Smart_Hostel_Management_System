@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../services/api';
 
 const ManageNotices = () => {
     const [notices, setNotices] = useState([]);
@@ -8,10 +8,7 @@ const ManageNotices = () => {
 
     const fetchNotices = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.get('http://localhost:5000/api/notices', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/notices');
             setNotices(res.data);
             setLoading(false);
         } catch (err) {
@@ -27,10 +24,7 @@ const ManageNotices = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.post('http://localhost:5000/api/notices', form, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.post('/notices', form);
             setForm({ title: '', content: '', targetAudience: 'All', priority: 'Normal' });
             fetchNotices(); // refresh
         } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../services/api';
 
 const ManageAllocations = () => {
     const [allocations, setAllocations] = useState([]);
@@ -8,10 +8,7 @@ const ManageAllocations = () => {
 
     const fetchAllocations = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.get('http://localhost:5000/api/allocations', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/allocations');
             setAllocations(res.data);
             setLoading(false);
         } catch (err) {
@@ -27,11 +24,8 @@ const ManageAllocations = () => {
 
     const handleAction = async (id, action) => {
         try {
-            const token = localStorage.getItem('adminToken');
             // actions: 'approve', 'reject', 'vacate'
-            await axios.put(`http://localhost:5000/api/allocations/${id}/${action}`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.put(`/allocations/${id}/${action}`, {});
             fetchAllocations();
         } catch (err) {
             alert(err.response?.data?.msg || `Failed to ${action}`);

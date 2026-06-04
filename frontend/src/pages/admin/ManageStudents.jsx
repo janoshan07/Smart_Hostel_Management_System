@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API, { BACKEND_URL } from '../../services/api';
 import { Search, Filter, MoreVertical, ShieldAlert, UserX, UserCheck, Trash2, X, AlertTriangle, AlertCircle, CheckCircle, Clock, Edit } from 'lucide-react';
 
 const ManageStudents = () => {
@@ -29,10 +29,7 @@ const ManageStudents = () => {
 
     const fetchStudents = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.get('http://localhost:5000/api/students', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await API.get('/students');
             // Filter out fully deleted from normal view if desired, or keep them. 
             // We'll keep them to show 'Deleted' badge.
             setStudents(res.data);
@@ -47,11 +44,7 @@ const ManageStudents = () => {
         if (currentStatus === 'Deleted') return; // Cannot toggle deleted
         const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(`http://localhost:5000/api/students/${studentId}/status`,
-                { status: newStatus },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await API.put(`/students/${studentId}/status`, { status: newStatus });
             setStudents(students.map(s => s._id === studentId ? { ...s, status: newStatus } : s));
         } catch (err) {
             console.error('Failed to change status:', err);
@@ -62,10 +55,7 @@ const ManageStudents = () => {
     const handleDeleteStudent = async (studentId) => {
         if (!window.confirm('Are you sure you want to vacate this student account? It will be marked as vacated but not permanently deleted yet.')) return;
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/students/${studentId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.delete(`/students/${studentId}`);
             setStudents(students.map(s => s._id === studentId ? { ...s, status: 'Deleted' } : s));
         } catch (err) {
             console.error('Failed to delete student:', err);
@@ -76,11 +66,7 @@ const ManageStudents = () => {
     const handleRestoreStudent = async (studentId) => {
         if (!window.confirm('Are you sure you want to restore this student?')) return;
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(`http://localhost:5000/api/students/${studentId}/restore`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await API.put(`/students/${studentId}/restore`, {});
             setStudents(students.map(s => s._id === studentId ? { ...s, status: 'Active' } : s));
         } catch (err) {
             console.error('Failed to restore student:', err);
@@ -91,10 +77,7 @@ const ManageStudents = () => {
     const handlePermanentDelete = async (studentId) => {
         if (!window.confirm('WARNING: This will permanently delete the student and all related records (allocations, payments). This cannot be undone. Proceed?')) return;
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/students/${studentId}/permanent`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await API.delete(`/students/${studentId}/permanent`);
             setStudents(students.filter(s => s._id !== studentId));
         } catch (err) {
             console.error('Failed to delete student permanently:', err);
@@ -110,11 +93,7 @@ const ManageStudents = () => {
 
     const saveWarning = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(`http://localhost:5000/api/students/${selectedStudent._id}/warning`,
-                { adminWarning: warningText },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await API.put(`/students/${selectedStudent._id}/warning`, { adminWarning: warningText });
             setStudents(students.map(s => s._id === selectedStudent._id ? { ...s, adminWarning: warningText, warningAcknowledged: false } : s));
             setWarningModalOpen(false);
         } catch (err) {
@@ -126,11 +105,7 @@ const ManageStudents = () => {
     const clearWarning = async (studentId) => {
         if (!window.confirm('Are you sure you want to remove the warning from this student?')) return;
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(`http://localhost:5000/api/students/${studentId}/warning`,
-                { adminWarning: '' },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await API.put(`/students/${studentId}/warning`, { adminWarning: '' });
             setStudents(students.map(s => s._id === studentId ? { ...s, adminWarning: '', warningAcknowledged: false } : s));
         } catch (err) {
             console.error('Failed to clear warning:', err);
@@ -157,11 +132,7 @@ const ManageStudents = () => {
 
     const saveEdit = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.put(`http://localhost:5000/api/students/${selectedStudent._id}`,
-                editFormData,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const res = await API.put(`/students/${selectedStudent._id}`, editFormData);
             setStudents(students.map(s => s._id === selectedStudent._id ? { ...s, ...res.data } : s));
             setEditModalOpen(false);
         } catch (err) {
@@ -222,7 +193,7 @@ const ManageStudents = () => {
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800 border-2 border-slate-700 shrink-0 flex justify-center items-center">
                                         {student.profilePic ? (
-                                            <img src={student.profilePic} alt="pic" className="w-full h-full object-cover" />
+                                            <img src={student.profilePic.startsWith('data:image') || student.profilePic.startsWith('http') ? student.profilePic : `${BACKEND_URL}${student.profilePic}`} alt="pic" className="w-full h-full object-cover" />
                                         ) : (
                                             <span className="font-bold text-lg text-indigo-400">
                                                 {student.firstName?.[0]}{student.lastName?.[0]}

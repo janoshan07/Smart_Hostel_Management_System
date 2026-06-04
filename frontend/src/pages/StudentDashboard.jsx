@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import API, { BACKEND_URL } from '../services/api';
 import { 
     LayoutDashboard, 
     Home, 
@@ -61,14 +61,11 @@ function StudentDashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const config = { headers: { Authorization: `Bearer ${token}` } };
-                
                 const [profileRes, roomRes, compRes, noticeRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/students/profile', config).catch(() => ({data: null})),
-                    axios.get('http://localhost:5000/api/students/room', config).catch(() => ({data: null})),
-                    axios.get('http://localhost:5000/api/students/complaints', config).catch(() => ({data: []})),
-                    axios.get('http://localhost:5000/api/notices', config).catch(() => ({data: []}))
+                    API.get('/students/profile').catch(() => ({data: null})),
+                    API.get('/students/room').catch(() => ({data: null})),
+                    API.get('/students/complaints').catch(() => ({data: []})),
+                    API.get('/notices').catch(() => ({data: []}))
                 ]);
 
                 setProfile(profileRes.data);
@@ -210,7 +207,7 @@ function StudentDashboard() {
                             <div className="relative mb-6">
                                 <div className="w-24 h-24 rounded-[2rem] bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.2)]">
                                     {profile?.profilePic ? (
-                                        <img src={profile.profilePic} className="w-full h-full object-cover rounded-[2rem]" alt="Profile" />
+                                        <img src={profile.profilePic.startsWith('data:image') || profile.profilePic.startsWith('http') ? profile.profilePic : `${BACKEND_URL}${profile.profilePic}`} className="w-full h-full object-cover rounded-[2rem]" alt="Profile" />
                                     ) : (
                                         <span className="text-3xl font-black text-indigo-400 uppercase">{profile?.firstName?.[0]}{profile?.lastName?.[0]}</span>
                                     )}

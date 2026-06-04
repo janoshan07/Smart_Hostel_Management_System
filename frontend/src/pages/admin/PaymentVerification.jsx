@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Eye, AlertCircle, RefreshCw } from 'lucide-react';
 import { getPendingVerifications, verifyBankTransfer } from '../../services/paymentService';
+import { BACKEND_URL } from '../../services/api';
 
 function PaymentVerification() {
   const [verifications, setVerifications] = useState([]);
@@ -210,10 +211,10 @@ function PaymentVerification() {
                           <p className="text-sm font-semibold text-gray-700 mb-2">Transfer Receipt:</p>
                           <div className="border border-gray-300 rounded-lg p-2 inline-block">
                             <img
-                              src={`http://localhost:5000${verification.bankTransferDetails.receiptImage}`}
+                              src={`${BACKEND_URL}${verification.bankTransferDetails.receiptImage}`}
                               alt="Transfer receipt"
                               className="max-w-full h-auto max-h-96 rounded cursor-pointer"
-                              onClick={() => window.open(`http://localhost:5000${verification.bankTransferDetails.receiptImage}`, '_blank')}
+                              onClick={() => window.open(`${BACKEND_URL}${verification.bankTransferDetails.receiptImage}`, '_blank')}
                             />
                           </div>
                         </div>
